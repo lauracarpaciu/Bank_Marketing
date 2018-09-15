@@ -28,3 +28,9 @@ if(file.exists(bankFile))bank_marketing_original <- read.csv(bankFile)
 
 head(bank_marketing_original)
 
+# eliminate any duplicates that may exist in the dataset
+
+bank <- bank_marketing_original %>%
+ distinct(.keep_all = TRUE,)
+
+
