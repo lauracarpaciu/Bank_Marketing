@@ -31,3 +31,17 @@ head(bm_original)
 bank <- bm_original%>%
   distinct(.keep_all = TRUE,education,balance,age)
 
+
+# generate an id column for future use (joins etc)
+bank$bank_id = seq.int(nrow(bank))
+
+head(bank)
+summary(bank)
+
+
+bank %>%
+  ggplot(mapping = aes(education)) +
+  geom_bar(aes(fill=marital), width=1, color="black") +
+  theme(legend.position = "bottom", legend.direction = "vertical") + ggtitle("Education vs marital statut")
+
+
