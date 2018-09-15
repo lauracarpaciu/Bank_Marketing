@@ -44,4 +44,32 @@ bank %>%
   geom_bar(aes(fill=marital), width=1, color="black") +
   theme(legend.position = "bottom", legend.direction = "vertical") + ggtitle("Education vs marital statut")
 
+bank %>%
+  dplyr::group_by(age = age) %>%
+  dplyr::summarize(
+    totalcampaigns = n(),
+    totaldurations = sum(duration),
+    durationspercampains = totaldurations / totalcampaigns
+  ) %>%
+  ggplot(mapping = aes(x = age, y = durationspercampains)) +
+  geom_point() +
+  geom_smooth(method = "loess") + ggtitle("Duration per campaings")
 
+# what values is our dataset missing?
+
+ggplot_missing <- function(x){
+  
+  x %>%
+    is.na %>%
+    melt %>%
+    ggplot(mapping = aes(x = Var2,
+                         y = Var1)) +
+    geom_raster(aes(fill = value)) +
+    scale_fill_grey(name = "",
+                    labels = c("Present","Missing")) +
+    theme(axis.text.x  = element_text(angle=45, vjust=0.5)) +
+    labs(x = "Variables in Dataset",
+         y = "Rows / observations")
+}
+
+ggplot_missing(bank)
