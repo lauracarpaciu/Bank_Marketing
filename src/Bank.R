@@ -74,6 +74,23 @@ ggplot_missing <- function(x){
 
 ggplot_missing(bank)
 
+summary(bank$balance)
+
+# creditors type: Tertiary, Primary, Secondary,Unknown
+bank$tertiary <- FALSE
+bank$tertiary[bank$education == "tertiary"] <- TRUE
+
+bank$primary <- FALSE
+bank$primary[bank$education %like% "primary"] <- TRUE
+
+bank$secondary <- FALSE
+bank$secondary[bank$education %like% "secondary"] <- TRUE
+
+bank$unknown <- FALSE
+bank$unknown[bank$education %like% "unknown"] <- TRUE
+
+head(bank)
+
 bank <- bank %>% dplyr::filter("tertiary" == FALSE)
 
 bankperf <- bank %>%
