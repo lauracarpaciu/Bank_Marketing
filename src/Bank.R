@@ -47,13 +47,13 @@ bank %>%
 bank %>%
   dplyr::group_by(age = age) %>%
   dplyr::summarize(
-    totalcampaigns = n(),
-    totaldurations = sum(duration),
-    durationspercampains = totaldurations / totalcampaigns
+    totalcreditors = n(),
+    totalbalances = sum(balance),
+    balancespercreditors = totalbalances / totalcreditors
   ) %>%
-  ggplot(mapping = aes(x = age, y = durationspercampains)) +
+  ggplot(mapping = aes(x = age, y = balancespercreditors)) +
   geom_point() +
-  geom_smooth(method = "loess") + ggtitle("Duration per campaings")
+  geom_smooth(method = "loess") + ggtitle("Balances per creditors,vs age")
 
 # what values is our dataset missing?
 
@@ -73,3 +73,26 @@ ggplot_missing <- function(x){
 }
 
 ggplot_missing(bank)
+
+bank <- bank %>% dplyr::filter("tertiary" == FALSE)
+
+bankperf <- bank %>%
+  dplyr::mutate(
+    name = job,
+    opponentName = marital,
+    homeVenue = education,
+    neutralVenue = default,
+    gs = balance > 1000,
+    ga = duration < 150,
+    gd = gs - ga,
+    w = education == "tertiary" & marital =="marrid",
+    l = education == "tertiary",
+    d = balance[1] <- 1000,
+    friendly = balance[1] <- 1000,
+    qualifier = balance,
+    finaltourn = housing
+    ) %>%
+  dplyr::select (bank_id,age, name, opponentName, homeVenue, neutralVenue, ga, gd, w, l, d, friendly, qualifier, finaltourn)
+
+head(bankperf)
+
