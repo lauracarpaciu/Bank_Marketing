@@ -120,3 +120,22 @@ unknown = unknown) %>%
 dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id,tertiary,primary,secondary,unknown)
 head(bkmk_perf)
 
+# transform old job names into new ones( with CL).
+jobNodeMappings <- matrix(c(
+  "management","Management",
+  "technician","Technician",
+  "entrepreneur","Entrepreneur",
+  "blue-collar","blue-collar",
+  "unknown","Unknown",
+  "services","Services",
+  "retired","Retired"
+), ncol=2, byrow = TRUE)
+
+for (i in 1:nrow(jobNodeMappings)) {
+  bkmk_perf$job[bkmk_perf$job == jobNodeMappings[i,1]] <- jobNodeMappings[i,2]
+  
+  bank$job[bank$job == jobNodeMappings[i,1]] <- jobNodeMappings[i,2]
+  
+}
+
+head(bkmk_perf)
