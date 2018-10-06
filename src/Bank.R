@@ -76,7 +76,7 @@ ggplot_missing(bank)
 
 summary(bank$balance)
 
-# creditors type: Tertiary, Primary, Secondary,Unknown
+# creditors education type: Tertiary, Primary, Secondary,Unknown
 bank$tertiary <- FALSE
 bank$tertiary[bank$education == "tertiary"] <- TRUE
 
@@ -91,25 +91,32 @@ bank$unknown[bank$education %like% "unknown"] <- TRUE
 
 head(bank)
 
-bank <- bank %>% dplyr::filter("tertiary" == FALSE)
+# not use unknown education creditors 
 
-bankperf <- bank %>%
-  dplyr::mutate(
-    name = job,
-    opponentName = marital,
-    homeVenue = education,
-    neutralVenue = default,
-    gs = balance > 1000,
-    ga = duration < 150,
-    gd = gs - ga,
-    w = education == "tertiary" & marital =="marrid",
-    l = education == "tertiary",
-    d = balance[1] <- 1000,
-    friendly = balance[1] <- 1000,
-    qualifier = balance,
-    finaltourn = housing
-    ) %>%
-  dplyr::select (bank_id,age, name, opponentName, homeVenue, neutralVenue, ga, gd, w, l, d, friendly, qualifier, finaltourn)
+bank <- bank %>% dplyr::filter(unknown == FALSE)
 
-head(bankperf)
+bkmk_perf <- bank %>%
+dplyr::mutate(
+bal = (balance > 1000),
+dtion = (duration < 150),
+edumar = (education == "tertiary" & marital == "married"),
+age = age,
+job = job,
+default = default,
+housing = housing,
+loan = loan,
+contact = contact,
+day = day,
+month = month,
+pdays = pdays,
+previous = previous,
+poutcome = poutcome,
+y = y,
+bank_id = bank_id,
+tertiary = tertiary,
+primary = primary,
+secondary = secondary,
+unknown = unknown) %>%
+dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id,tertiary,primary,secondary,unknown)
+head(bkmk_perf)
 
