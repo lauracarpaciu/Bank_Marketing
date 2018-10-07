@@ -120,6 +120,29 @@ unknown = unknown) %>%
 dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id,tertiary,primary,secondary,unknown)
 head(bkmk_perf)
 
+formula_balpercentage <- function(totalcustomers, balance) {
+  return ((balance) / totalcustomers)
+}
+
+plot_balpercentage <- function(bkmk_perf, mincustomers) {
+  bkmk_perf %>%
+    group_by(job) %>%
+    summarize(
+      totalcustomers = n(),
+      balance = length(bal[bal==TRUE]),
+      balpercentage = formula_balpercentage(totalcustomers, balance)
+    ) %>%
+    filter(totalcustomers >= mincustomers ) %>%
+    ggplot(mapping = aes(x = balpercentage, y = totalcustomers)) +
+    geom_point(size = 1.5) + 
+    geom_text(aes(label=job), hjust=-.2 , vjust=-.2, size=3) +
+    geom_vline(xintercept = .5, linetype = 2, color = "red") +
+    ggtitle("Balance Percentage vs Customers") +
+    expand_limits(x = c(0,1))
+} 
+
+plot_balpercentage(bkmk_perf, 120)
+
 # transform old job names into new ones( with CL).
 jobNodeMappings <- matrix(c(
   "management","Management",
