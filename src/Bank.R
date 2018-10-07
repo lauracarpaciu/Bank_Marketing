@@ -125,7 +125,7 @@ jobNodeMappings <- matrix(c(
   "management","Management",
   "technician","Technician",
   "entrepreneur","Entrepreneur",
-  "blue-collar","blue-collar",
+  "blue-collar","Blue-collar",
   "unknown","Unknown",
   "services","Services",
   "retired","Retired"
