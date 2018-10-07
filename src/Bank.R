@@ -193,3 +193,8 @@ out <- bank %>% dplyr::filter(abs(age) > 60)
 head(out)
 paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 
+# get rid of all the outliers by selecting the age to [20, 60]
+bkmk_perf$age[bkmk_perf$age < 20] <- 20
+bkmk_perf$age[bkmk_perf$age > 60] <- 60
+
+              
