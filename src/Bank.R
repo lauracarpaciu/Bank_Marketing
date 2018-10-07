@@ -139,3 +139,57 @@ for (i in 1:nrow(jobNodeMappings)) {
 }
 
 head(bkmk_perf)
+
+# what is the occurence frequency for martital statut?
+
+maritalfreq <- bank %>%
+  group_by(marital,job) %>%
+  summarise(
+    n = n(),
+    freq = n / nrow(bank)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    maritaltext = paste(marital,"vs",job)
+  ) %>%
+  arrange(desc(freq)) 
+
+head(maritalfreq, 15)
+
+# distribution of balance per customer
+balancefreq <- bank %>%
+  group_by(bal= balance) %>%
+  summarise(
+    n = n(),
+    freq = n / nrow(bank)
+  ) %>%
+  ungroup() %>%
+  arrange(desc(freq)) 
+
+head(balancefreq, 25)
+
+balancefreq %>%
+  filter(freq >= 0.001) %>%
+  ggplot(mapping = aes(x = bal, y = freq)) + geom_bar(stat = "identity") + ggtitle("Balance  per customer distribution")
+
+# distribution of customer age
+agefreq <- bank %>%
+  group_by(ctage = age) %>%
+  summarise(
+    n = n(),
+    freq = n / nrow(bank)
+  ) %>%
+  ungroup() %>%
+  arrange(ctage) 
+
+head(agefreq %>% filter(abs(ctage)<=35), 15)
+
+agefreq %>%
+  filter(abs(ctage)<=35) %>%
+  ggplot(mapping = aes(x = ctage, y = freq)) + geom_bar(stat = "identity") + ggtitle("Customer age distribution")
+
+# how many outliers do we have?
+out <- bank %>% dplyr::filter(abs(age) > 60)
+head(out)
+paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
+
