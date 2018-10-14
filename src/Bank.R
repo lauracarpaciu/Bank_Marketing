@@ -141,7 +141,7 @@ plot_balpercentage <- function(bkmk_perf, mincustomers) {
     expand_limits(x = c(0,1))
 } 
 
-plot_balpercentage(bkmk_perf, 120)
+plot_balpercentage(bkmk_perf, 900)
 
 # transform old job names into new ones( with CL).
 jobNodeMappings <- matrix(c(
@@ -220,4 +220,45 @@ paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 bkmk_perf$age[bkmk_perf$age < 20] <- 20
 bkmk_perf$age[bkmk_perf$age > 60] <- 60
 
-              
+# Let's calculate some lag features           
+# we'll take three windows: last 10 customers, last 30 customers, last 50 customers.
+# for each window we'll calculate some values
+
+lagfn <- function(data, width) {
+  return (rollapplyr(data, width = width + 1, FUN = sum, fill = NA, partial=TRUE) - data)
+}
+
+lagfn_per <- function(data, width) {
+  return (lagfn(data, width) / width)
+}
+
+customer_features <- bkmk_perf %>%
+  dplyr::arrange(job, age) %>%
+  dplyr::group_by(job) %>%
+  dplyr::mutate(
+    last10customers_bal_per = lagfn_per(bal, 10),
+    last30customers_bal_per = lagfn_per(bal, 30),
+    last50customers_bal_per = lagfn_per(bal, 50),
+    
+    last10customers_dtion_per = lagfn_per(dtion, 10),
+    last30customers_dtion_per = lagfn_per(dtion, 30),
+    last50customers_dtion_per = lagfn_per(dtion, 50),
+    
+    last10customers_edumar_per = lagfn_per(edumar, 10),
+    last30customers_edumar_per = lagfn_per(edumar, 30),
+    last50customers_edumar_per = lagfn_per(edumar, 50),
+    
+    
+  ) %>%
+  dplyr::select (
+    bank_id, age, job,
+    bal, last10customers_bal_per, last30customers_bal_per, last50customers_bal_per,
+    dtion, last10customers_dtion_per, last30customers_dtion_per, last50customers_dtion_per,
+    edumar,last10customers_edumar_per, last30customers_edumar_per, last50customers_edumar_per
+    
+  ) %>%
+  dplyr::ungroup()
+
+head((customer_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 35)
+summary(customer_features)
+
