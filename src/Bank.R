@@ -262,3 +262,9 @@ customer_features <- bkmk_perf %>%
 head((customer_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 35)
 summary(customer_features)
 
+# drop all non-interesting columns, and those which should not be supplied for new data 
+customer_features <- customer_features %>%
+  dplyr::select(-c(bank_id))
+
+head(customer_features)
+names(customer_features)
