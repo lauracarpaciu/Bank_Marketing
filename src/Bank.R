@@ -232,7 +232,7 @@ lagfn_per <- function(data, width) {
   return (lagfn(data, width) / width)
 }
 
-customer_features <- bkmk_perf %>%
+bank_features <- bkmk_perf %>%
   dplyr::arrange(job, age) %>%
   dplyr::group_by(job) %>%
   dplyr::mutate(
@@ -259,12 +259,13 @@ customer_features <- bkmk_perf %>%
   ) %>%
   dplyr::ungroup()
 
-head((customer_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 35)
-summary(customer_features)
+head((bank_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 35)
+summary(bank_features)
 
 # drop all non-interesting columns, and those which should not be supplied for new data 
-customer_features <- customer_features %>%
+bank_features <- bank_features %>%
   dplyr::select(-c(bank_id))
 
-head(customer_features)
-names(customer_features)
+head(bank_features)
+names(bank_features)
+
