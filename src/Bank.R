@@ -220,6 +220,19 @@ paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 bkmk_perf$age[bkmk_perf$age < 20] <- 20
 bkmk_perf$age[bkmk_perf$age > 60] <- 60
 
+# Load the data
+dm <-"C:\\Users\\Mirela\\RStudioProjects\\Marketing\\datasets\\directmail.csv"
+
+if(!file.exists(dm)){tryCatch(dm)}
+
+if(file.exists(dm)) dm_original <- read.csv(dm)
+
+bkmk_perf <- bkmk_perf %>%
+  dplyr::left_join(dm_original, by=c("age"="age")) %>%
+  dplyr::select(bank_id, age, job, gender,children)%>%
+
+head(bkmk_perf)
+
 # Let's calculate some lag features           
 # we'll take three windows: last 10 customers, last 30 customers, last 50 customers.
 # for each window we'll calculate some values
@@ -268,4 +281,5 @@ bank_features <- bank_features %>%
 
 head(bank_features)
 names(bank_features)
+
 
