@@ -26,6 +26,15 @@ if(file.exists(bm)) bm_original <- read.csv(bm, header = TRUE, stringsAsFactors 
 
 head(bm_original)
 
+# Load the data
+dm <-"C:\\Users\\Mirela\\RStudioProjects\\Marketing\\datasets\\directmail.csv"
+
+if(!file.exists(dm)){tryCatch(dm)}
+
+if(file.exists(dm)) dm_original <- read.csv(dm)
+
+
+
 # eliminate any duplicates that may exist in the dataset
 
 bank <- bm_original%>%
@@ -37,7 +46,6 @@ bank$bank_id = seq.int(nrow(bank))
 
 head(bank)
 summary(bank)
-
 
 bank %>%
   ggplot(mapping = aes(education)) +
@@ -94,6 +102,25 @@ head(bank)
 # not use unknown education creditors 
 
 bank <- bank %>% dplyr::filter(unknown == FALSE)
+# education and adjustment coefficients for them
+educations <- as.data.frame(matrix(c(
+  "primary","0.90",
+  "secondary","0.95",
+  "tertiary","0.85",
+  "unknown","0.2"  
+), ncol=2, byrow = TRUE, dimnames = list(NULL, c("education","adjust"))), stringsAsFactors = FALSE)
+
+educations$education <- as.vector(educations$education)
+educations$adjust <- as.numeric(educations$adjust)
+
+# add a confederation coefficient for the opponent faced 
+bank <- bank %>%
+  dplyr::left_join(educations, by=c("education")) %>%
+  dplyr::select(bank_id, adjust, age,balance,education, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y)
+
+# set missing values to 1
+bank$adjust[is.na(bank$adjust)] <- 1
+head(bank)
 
 bkmk_perf <- bank %>%
 dplyr::mutate(
@@ -220,18 +247,7 @@ paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 bkmk_perf$age[bkmk_perf$age < 20] <- 20
 bkmk_perf$age[bkmk_perf$age > 60] <- 60
 
-# Load the data
-dm <-"C:\\Users\\Mirela\\RStudioProjects\\Marketing\\datasets\\directmail.csv"
 
-if(!file.exists(dm)){tryCatch(dm)}
-
-if(file.exists(dm)) dm_original <- read.csv(dm)
-
-bkmk_perf <- bkmk_perf %>%
-  dplyr::left_join(dm_original, by=c("age"="age")) %>%
-  dplyr::select(bank_id, age, job, gender,children)%>%
-
-head(bkmk_perf)
 
 # Let's calculate some lag features           
 # we'll take three windows: last 10 customers, last 30 customers, last 50 customers.
