@@ -284,9 +284,22 @@ summary(bank_features)
 
 # drop all non-interesting columns, and those which should not be supplied for new data 
 bank_features <- bank_features %>%
-  dplyr::select(-c(bank_id))
+  dplyr::select(-c(bal))
 
 head(bank_features)
 names(bank_features)
 
+# create the training formula 
+trainformula <- as.formula(paste('outcome',
+                                 paste(names(bank_features %>% dplyr::select(-c(age,job))),collapse=' + '),
+                                 sep=' ~ '))
+trainformula
+
+# training and testing datasets
+
+data.train1 <- bank_features %>% dplyr::filter(bank_id < '44507')
+data.test1 <- bank_features %>% dplyr::filter(bank_id>= '44507' & date <='1')
+
+nrow(data.train1)
+nrow(data.test1)
 
