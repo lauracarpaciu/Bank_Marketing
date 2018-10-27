@@ -291,15 +291,21 @@ names(bank_features)
 
 # create the training formula 
 trainformula <- as.formula(paste('outcome',
-                                 paste(names(bank_features %>% dplyr::select(-c(age,job))),collapse=' + '),
+                                 paste(names(bank_features %>% dplyr::select(-c(job))),collapse=' + '),
                                  sep=' ~ '))
 trainformula
 
 # training and testing datasets
 
-data.train1 <- bank_features %>% dplyr::filter(bank_id < '44507')
-data.test1 <- bank_features %>% dplyr::filter(bank_id>= '44507' & date <='1')
+data.train1 <- bank_features %>% dplyr::filter(age < '55')
+data.test1 <- bank_features %>% dplyr::filter(age>= '55' & age <='71')
 
 nrow(data.train1)
 nrow(data.test1)
+
+# train a random forest
+model.randomForest1 <- randomForest::randomForest(trainformula, data = data.train1, 
+                                                  importance = TRUE, ntree = 500)
+
+summary(model.randomForest1)
 
