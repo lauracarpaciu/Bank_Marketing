@@ -135,7 +135,7 @@ poutcome = poutcome,
 y = y,
 bank_id = bank_id,
 ) %>%
-dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id)
+dplyr::select (bal, dtion, edumar, age, job,adjust, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id)
 head(bkmk_perf)
 
 formula_balpercentage <- function(totalcustomers, balance) {
@@ -271,7 +271,7 @@ bank_features <- bkmk_perf %>%
     
   ) %>%
   dplyr::select (
-    bank_id, age, job,
+    bank_id, age, job,adjust,
     bal, last10customers_bal_per, last30customers_bal_per, last50customers_bal_per,
     dtion, last10customers_dtion_per, last30customers_dtion_per, last50customers_dtion_per,
     edumar,last10customers_edumar_per, last30customers_edumar_per, last50customers_edumar_per
