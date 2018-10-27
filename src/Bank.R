@@ -26,14 +26,6 @@ if(file.exists(bm)) bm_original <- read.csv(bm, header = TRUE, stringsAsFactors 
 
 head(bm_original)
 
-# Load the data
-dm <-"C:\\Users\\Mirela\\RStudioProjects\\Marketing\\datasets\\directmail.csv"
-
-if(!file.exists(dm)){tryCatch(dm)}
-
-if(file.exists(dm)) dm_original <- read.csv(dm)
-
-
 
 # eliminate any duplicates that may exist in the dataset
 
@@ -102,25 +94,27 @@ head(bank)
 # not use unknown education creditors 
 
 bank <- bank %>% dplyr::filter(unknown == FALSE)
-# education and adjustment coefficients for them
-educations <- as.data.frame(matrix(c(
-  "primary","0.90",
-  "secondary","0.95",
-  "tertiary","0.85",
-  "unknown","0.2"  
-), ncol=2, byrow = TRUE, dimnames = list(NULL, c("education","adjust"))), stringsAsFactors = FALSE)
 
-educations$education <- as.vector(educations$education)
-educations$adjust <- as.numeric(educations$adjust)
+# job and adjustment coefficients for them
+jobs <- as.data.frame(matrix(c(
+  "management","0.99",
+  "technician","0.75",
+  "entrepreneur","0.9",
+  "blue-collar","0.8",
+  "unknown","0.5",
+  "services","0.85",
+  "retired","0.8"  
+), ncol=2, byrow = TRUE, dimnames = list(NULL, c("job","adjust"))), stringsAsFactors = FALSE)
+
+jobs$job <- as.vector(jobs$job)
+jobs$adjust <- as.numeric(jobs$adjust)
 
 # add a confederation coefficient for the opponent faced 
 bank <- bank %>%
-  dplyr::left_join(educations, by=c("education")) %>%
-  dplyr::select(bank_id, adjust, age,balance,education, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y)
-
+  dplyr::left_join(jobs, by=c("job")) %>%
+dplyr::select(bank_id,age,job,adjust,marital,education,default,balance,housing,loan,contact,day,month,duration,campaign,pdays,previous,poutcome,y) 
 # set missing values to 1
 bank$adjust[is.na(bank$adjust)] <- 1
-head(bank)
 
 bkmk_perf <- bank %>%
 dplyr::mutate(
@@ -140,11 +134,8 @@ previous = previous,
 poutcome = poutcome,
 y = y,
 bank_id = bank_id,
-tertiary = tertiary,
-primary = primary,
-secondary = secondary,
-unknown = unknown) %>%
-dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id,tertiary,primary,secondary,unknown)
+) %>%
+dplyr::select (bal, dtion, edumar, age, job, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id)
 head(bkmk_perf)
 
 formula_balpercentage <- function(totalcustomers, balance) {
