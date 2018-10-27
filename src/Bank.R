@@ -279,7 +279,7 @@ bank_features <- bkmk_perf %>%
   ) %>%
   dplyr::ungroup()
 
-head((bank_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 35)
+head((bank_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 100)
 summary(bank_features)
 
 # drop all non-interesting columns, and those which should not be supplied for new data 
