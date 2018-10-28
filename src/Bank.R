@@ -289,6 +289,10 @@ bank_features <- bank_features %>%
 head(bank_features)
 names(bank_features)
 
+# correlation matrix
+cormatrix <- cor(bank_features %>% dplyr::select(-c(bank_id, age, job,adjust)) )
+corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = 0.5)
+
 # create the training formula 
 trainformula <- as.formula(paste('outcome',
                                  paste(names(bank_features %>% dplyr::select(-c(job))),collapse=' + '),
@@ -305,7 +309,7 @@ nrow(data.test1)
 
 # train a random forest
 model.randomForest1 <- randomForest::randomForest(trainformula, data = data.train1, 
-                                                  importance = TRUE, ntree = 500)
+                                                  importance = TRUE, ntree = 300)
 
 summary(model.randomForest1)
 
