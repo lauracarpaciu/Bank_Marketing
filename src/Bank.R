@@ -30,7 +30,7 @@ head(bm_original)
 # eliminate any duplicates that may exist in the dataset
 
 bank <- bm_original%>%
-  distinct(.keep_all = TRUE,education,balance,age)
+  distinct(.keep_all = TRUE,age, job, marital, education,balance)
 
 
 # generate an id column for future use (joins etc)
@@ -76,7 +76,9 @@ ggplot_missing(bank)
 
 summary(bank$balance)
 
+# we can create some aditional features about the matches.
 # creditors education type: Tertiary, Primary, Secondary,Unknown
+
 bank$tertiary <- FALSE
 bank$tertiary[bank$education == "tertiary"] <- TRUE
 
@@ -96,6 +98,7 @@ head(bank)
 bank <- bank %>% dplyr::filter(unknown == FALSE)
 
 # job and adjustment coefficients for them
+
 jobs <- as.data.frame(matrix(c(
   "management","0.99",
   "technician","0.75",
@@ -299,7 +302,6 @@ trainformula <- as.formula(paste('outcome',
                                  sep=' ~ '))
 trainformula
 
-# training and testing datasets
 
 data.train1 <- bank_features %>% dplyr::filter(age < '55')
 data.test1 <- bank_features %>% dplyr::filter(age>= '55' & age <='71')
@@ -307,9 +309,10 @@ data.test1 <- bank_features %>% dplyr::filter(age>= '55' & age <='71')
 nrow(data.train1)
 nrow(data.test1)
 
+
 # train a random forest
 model.randomForest1 <- randomForest::randomForest(trainformula, data = data.train1, 
-                                                  importance = TRUE, ntree = 300)
+                                                  importance = TRUE, ntree = 400)
 
 summary(model.randomForest1)
-
+model.random <- randomForest::
