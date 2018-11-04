@@ -80,16 +80,16 @@ summary(bank$balance)
 # creditors education type: Tertiary, Primary, Secondary,Unknown
 
 bank$tertiary <- FALSE
-bank$tertiary[bank$education == "tertiary"] <- TRUE
+bank$tertiary[bank$education == "Tertiary"] <- TRUE
 
 bank$primary <- FALSE
-bank$primary[bank$education %like% "primary"] <- TRUE
+bank$primary[bank$education %like% "Primary"] <- TRUE
 
 bank$secondary <- FALSE
-bank$secondary[bank$education %like% "secondary"] <- TRUE
+bank$secondary[bank$education %like% "Secondary"] <- TRUE
 
 bank$unknown <- FALSE
-bank$unknown[bank$education %like% "unknown"] <- TRUE
+bank$unknown[bank$education %like% "Unknown"] <- TRUE
 
 head(bank)
 
@@ -97,48 +97,15 @@ head(bank)
 
 bank <- bank %>% dplyr::filter(unknown == FALSE)
 
-# job and adjustment coefficients for them
-
-jobs <- as.data.frame(matrix(c(
-  "management","0.99",
-  "technician","0.75",
-  "entrepreneur","0.9",
-  "blue-collar","0.8",
-  "unknown","0.5",
-  "services","0.85",
-  "retired","0.8"  
-), ncol=2, byrow = TRUE, dimnames = list(NULL, c("job","adjust"))), stringsAsFactors = FALSE)
-
-jobs$job <- as.vector(jobs$job)
-jobs$adjust <- as.numeric(jobs$adjust)
-
-# add a confederation coefficient for the opponent faced 
-bank <- bank %>%
-  dplyr::left_join(jobs, by=c("job")) %>%
-dplyr::select(bank_id,age,job,adjust,marital,education,default,balance,housing,loan,contact,day,month,duration,campaign,pdays,previous,poutcome,y) 
-# set missing values to 1
-bank$adjust[is.na(bank$adjust)] <- 1
-
 bkmk_perf <- bank %>%
 dplyr::mutate(
 bal = (balance > 1000),
 dtion = (duration < 150),
 edumar = (education == "tertiary" & marital == "married"),
-age = age,
-job = job,
-default = default,
-housing = housing,
-loan = loan,
-contact = contact,
-day = day,
-month = month,
-pdays = pdays,
-previous = previous,
-poutcome = poutcome,
-y = y,
-bank_id = bank_id,
+age = (age>25)
+
 ) %>%
-dplyr::select (bal, dtion, edumar, age, job,adjust, default, housing, loan, contact, day, month, pdays, previous, poutcome,y,bank_id)
+dplyr::select (bank_id,age,job,marital,edumar,bal,housing,dtion)
 head(bkmk_perf)
 
 formula_balpercentage <- function(totalcustomers, balance) {
@@ -233,15 +200,36 @@ agefreq %>%
   ggplot(mapping = aes(x = ctage, y = freq)) + geom_bar(stat = "identity") + ggtitle("Customer age distribution")
 
 # how many outliers do we have?
-out <- bank %>% dplyr::filter(abs(age) > 60)
+out <- bank %>% dplyr::filter(abs(balance) > 1000)
 head(out)
 paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 
-# get rid of all the outliers by selecting the age to [20, 60]
-bkmk_perf$age[bkmk_perf$age < 20] <- 20
-bkmk_perf$age[bkmk_perf$age > 60] <- 60
+# get rid of all the outliers by selecting the balance to [-1000, 1000]
+bkmk_perf$bal[bkmk_perf$bal < -1000] <- -1000
+bkmk_perf$bal[bkmk_perf$bal > 1000] <- 1000
 
+# job and adjustment coefficients for them
 
+jobs <- as.data.frame(matrix(c(
+  "management","0.99",
+  "technician","0.75",
+  "entrepreneur","0.9",
+  "blue-collar","0.8",
+  "unknown","0.5",
+  "services","0.85",
+  "retired","0.8"  
+), ncol=2, byrow = TRUE, dimnames = list(NULL, c("job","adjust"))), stringsAsFactors = FALSE)
+
+jobs$job <- as.vector(jobs$job)
+jobs$adjust <- as.numeric(jobs$adjust)
+
+bkmk_perf <- bkmk_perf %>%
+  dplyr::left_join(jobs, by=c("job")) %>%
+  dplyr::select(bank_id,age,job,adjust,marital,edumar,bal,housing,dtion)
+
+# set missing values to 1
+
+bank$adjust[is.na(bank$adjust)] <- 1
 
 # Let's calculate some lag features           
 # we'll take three windows: last 10 customers, last 30 customers, last 50 customers.
