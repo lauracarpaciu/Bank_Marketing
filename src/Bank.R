@@ -101,9 +101,7 @@ bkmk_perf <- bank %>%
 dplyr::mutate(
 bal = (balance > 1000),
 dtion = (duration < 150),
-edumar = (education == "tertiary" & marital == "married"),
-age = (age>25)
-
+edumar = (education == "tertiary" & marital == "married")
 ) %>%
 dplyr::select (bank_id,age,job,marital,edumar,bal,housing,dtion)
 head(bkmk_perf)
@@ -200,13 +198,13 @@ agefreq %>%
   ggplot(mapping = aes(x = ctage, y = freq)) + geom_bar(stat = "identity") + ggtitle("Customer age distribution")
 
 # how many outliers do we have?
-out <- bank %>% dplyr::filter(abs(balance) > 1000)
+out <- bank %>% dplyr::filter(abs(balance) > 8000)
 head(out)
 paste(nrow(out), "outliers, or", (nrow(out)/nrow(bank)*100), "% of total.")
 
-# get rid of all the outliers by selecting the balance to [-1000, 1000]
-bkmk_perf$bal[bkmk_perf$bal < -1000] <- -1000
-bkmk_perf$bal[bkmk_perf$bal > 1000] <- 1000
+# get rid of all the outliers by selecting the balance to [-8000, 8000]
+bkmk_perf$bal[bkmk_perf$bal < -8000] <- -8000
+bkmk_perf$bal[bkmk_perf$bal > 8000] <- 8000
 
 # job and adjustment coefficients for them
 
@@ -229,7 +227,7 @@ bkmk_perf <- bkmk_perf %>%
 
 # set missing values to 1
 
-bank$adjust[is.na(bank$adjust)] <- 1
+bkmk_perf$adjust[is.na(bkmk_perf$adjust)] <- 1
 
 # Let's calculate some lag features           
 # we'll take three windows: last 10 customers, last 30 customers, last 50 customers.
@@ -243,7 +241,7 @@ lagfn_per <- function(data, width) {
   return (lagfn(data, width) / width)
 }
 
-bank_features <- bkmk_perf %>%
+bankperf_features <- bkmk_perf %>%
   dplyr::arrange(job, age) %>%
   dplyr::group_by(job) %>%
   dplyr::mutate(
@@ -270,18 +268,39 @@ bank_features <- bkmk_perf %>%
   ) %>%
   dplyr::ungroup()
 
-head((bank_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 100)
-summary(bank_features)
+head((bankperf_features %>% dplyr::filter(job == "technician" & age >= '20')), n = 100)
+summary(bankperf_features)
+
+# fold per-bank_perf features into per-bank features
+bank_features <- bank %>%
+  left_join(bankperf_features, by=c("bank_id", "age" = "age")) %>%
+  dplyr::select(
+    age,marital,education,housing,duration,
+    last10customers_bal_per,
+    last30customers_bal_per,
+    last50customers_bal_per,
+    last10customers_dtion_per,
+    last30customers_dtion_per,
+    last50customers_dtion_per,
+    last10customers_edumar_per,
+    last30customers_edumar_per, 
+    last50customers_edumar_per,
+    outcome=balance
+  )
+
+head(bank_features)
+names(bank_features)
+
 
 # drop all non-interesting columns, and those which should not be supplied for new data 
 bank_features <- bank_features %>%
-  dplyr::select(-c(bal))
+  dplyr::select(-c(duration))
 
 head(bank_features)
 names(bank_features)
 
 # correlation matrix
-cormatrix <- cor(bank_features %>% dplyr::select(-c(bank_id, age, job,adjust)) )
+cormatrix <- cor(bank_features %>% dplyr::select(-c(age)) )
 corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = 0.5)
 
 # create the training formula 
