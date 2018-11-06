@@ -297,7 +297,23 @@ corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt
 
 # create the training formula 
 trainformula <- as.formula(paste('outcome',
-                                 paste(names(bank_features %>% dplyr::select(-c(housing,outcome))),collapse=' + '),
+                                 paste(names(bank_features %>% dplyr::select(-c(age,housing,outcome))),collapse=' + '),
                                  sep=' ~ '))
 trainformula
 
+
+
+
+# training and testing datasets
+
+data.train1 <- bank_features %>% dplyr::filter(age < '55')
+data.test1 <- bank_features %>% dplyr::filter(age>= '55' & age <='71')
+
+nrow(data.train1)
+nrow(data.test1)
+
+# train a random forest
+model.randomForest1 <- randomForest::randomForest(trainformula, data = data.train1, 
+                                                  importance = TRUE, ntree = 200)
+
+summary(model.randomForest1)
