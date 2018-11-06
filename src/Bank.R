@@ -296,7 +296,7 @@ cormatrix <- cor(bank_features %>% dplyr::select(-c(marital,education, housing))
 corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = 0.5)
 
 # create the training formula 
-trainformula <- as.formula(paste('outcome',
+trainformula <- as.factor(paste('outcome',
                                  paste(names(bank_features %>% dplyr::select(-c(age,housing,outcome))),collapse=' + '),
                                  sep=' ~ '))
 trainformula
