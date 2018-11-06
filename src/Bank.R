@@ -301,9 +301,6 @@ trainformula <- as.formula(paste('outcome',
                                  sep=' ~ '))
 trainformula
 
-
-
-
 # training and testing datasets
 
 data.train1 <- bank_features %>% dplyr::filter(age < '55')
