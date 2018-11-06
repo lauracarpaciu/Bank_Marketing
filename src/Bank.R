@@ -291,35 +291,13 @@ bank_features <- bank %>%
 head(bank_features)
 names(bank_features)
 
-
-# drop all non-interesting columns, and those which should not be supplied for new data 
-bank_features <- bank_features %>%
-  dplyr::select(-c(duration))
-
-head(bank_features)
-names(bank_features)
-
 # correlation matrix
-cormatrix <- cor(bank_features %>% dplyr::select(-c(age)) )
+cormatrix <- cor(bank_features %>% dplyr::select(-c(marital,education, housing)) )
 corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = 0.5)
 
 # create the training formula 
 trainformula <- as.formula(paste('outcome',
-                                 paste(names(bank_features %>% dplyr::select(-c(job))),collapse=' + '),
+                                 paste(names(bank_features %>% dplyr::select(-c(housing,outcome))),collapse=' + '),
                                  sep=' ~ '))
 trainformula
 
-
-data.train1 <- bank_features %>% dplyr::filter(age < '55')
-data.test1 <- bank_features %>% dplyr::filter(age>= '55' & age <='71')
-
-nrow(data.train1)
-nrow(data.test1)
-
-
-# train a random forest
-model.randomForest1 <- randomForest::randomForest(trainformula, data = data.train1, 
-                                                  importance = TRUE, ntree = 400)
-
-summary(model.randomForest1)
-model.random <- randomForest::
