@@ -296,8 +296,8 @@ cormatrix <- cor(bank_features %>% dplyr::select(-c(marital,education, housing))
 corrplot(cormatrix, type = "upper", order = "original", tl.col = "black", tl.srt = 45, tl.cex = 0.5)
 
 # create the training formula 
-trainformula <- as.factor(paste('outcome',
-                                 paste(names(bank_features %>% dplyr::select(-c(age,housing,outcome))),collapse=' + '),
+trainformula <- as.formula(paste('outcome',
+                                 paste(names(bank_features %>% dplyr::select(-c(age,marital,education, housing,outcome))),collapse=' + '),
                                  sep=' ~ '))
 trainformula
 
@@ -317,3 +317,19 @@ model.randomForest1 <- randomForest::randomForest(trainformula, data = data.trai
                                                   importance = TRUE, ntree = 200)
 
 summary(model.randomForest1)
+
+randomForest::importance(model.randomForest1, type=1)
+randomForest::varImpPlot(model.randomForest1, type=1)
+
+data.pred.randomForest1 <- predict(model.randomForest1, data.test1, predict.all = TRUE)
+
+metrics.randomForest1.mae <- Metrics::mae(data.test1$outcome, data.pred.randomForest1$aggregate)
+metrics.randomForest1.rmse <- Metrics::rmse(data.test1$outcome, data.pred.randomForest1$aggregate)
+
+paste("Mean Absolute Error:", metrics.randomForest1.mae)
+paste("Root Mean Square Error:",metrics.randomForest1.rmse)
+
+abs_error <- abs(data.test1$outcome - data.pred.randomForest1$aggregate)
+plot(abs_error, main="Mean Absolute Error")
+
+
