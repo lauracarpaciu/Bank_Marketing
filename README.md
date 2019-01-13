@@ -1,4 +1,4 @@
-﻿	Intro
+	Intro
 
 	What is this repository for?
 
@@ -10,10 +10,6 @@ Basic concepts of machine learning
 
 How the data is prepared (the most important step)
 The data processing and neural network technology choice
-
-    I’ve chosen python for the backend because many major innovations in neural networks are found in python. A growing community with a lot of github repositories, tutorials blogs and books are here to help.
-    For the data processing part I’ve used PANDAS.
-(https://pandas.pydata.org/) Pandas make working with data easy. You can load tables from CSV, Excel, python data structures and reorder them, drop columns, add columns, index by a column and many other transformations.
 
 Neural networks are data structures that resemble brain cells called neurons. Since discovered that a brain has special cells named neurons that communicate with other neurons by electrical impulses through “lines” called axons. If stimulated sufficiently (from many other neurons) the neurons will trigger an electric impulse further away in this “network” stimulating other neurons.
 Computer algorithms try to replicate this biological process.
@@ -45,6 +41,20 @@ In many machine learning and neural network problems data preparation is a very 
     Splitting the data in train and test data
     Split each of the train and test data into inputs and outputs.
 
+Getting the raw data
+In our case getting data for a CSV file in r is really easy with this lines of code:
+
+if(!file.exists(bm)){tryCatch(bm)}
+
+if(file.exists(bm)) bm_original <- read.csv(bm, header = TRUE, stringsAsFactors = FALSE, sep = ";")
+
+Data cleanup
+
+eliminate any duplicates that may exist in the dataset
+the empty values in the dataframe are dropped
+
+
+Data grouping & data enhancing
 
 
 
