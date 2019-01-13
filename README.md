@@ -8,23 +8,11 @@ In R language I can deal with missing values; working with categorical variables
 
 Basic concepts of machine learning
 
-How the data is prepared (the most important step)
-The data processing and neural network technology choice
-
-Neural networks are data structures that resemble brain cells called neurons. Since discovered that a brain has special cells named neurons that communicate with other neurons by electrical impulses through “lines” called axons. If stimulated sufficiently (from many other neurons) the neurons will trigger an electric impulse further away in this “network” stimulating other neurons.
-Computer algorithms try to replicate this biological process.
-In computer, neural nets each neuron has a “trigger point” where if stimulated over that point it will propagate the stimulation forward, if not it would not. For this, each simulated neuron will have a bias, and each axon a weight. After a random initialization of these values a process called “learning” starts this means in a loop algorithm will do this steps:
-
-    Stimulate the input neurons
-    Propagate the signals through the network layers until the output neurons
-    Read the output neurons and compare the results with the desired results
-    Tweak the axons weights for a better result next time
-    Start again until the number of loops has been reached
-    One more thing, here well be using a supervised learning method. That means we'll teach the algorithm the inputs and the outputs also, so that given a new set of inputs it can predict the output.
+I used a random forest, an algorithm which grows multiple decision trees from the features presented to it, and has each individual tree "vote" on the outcome for each new input vector (or in other words, new match to predict). It's fast, fairly accurate, and it gives an unbiased estimate of the generalization error, which makes cross-validation unnecessary for this particular algorithm.
 
 How the data is prepared (the most important step)
 
-In many machine learning and neural network problems data preparation is a very important part and it will cover:
+In many machine learning data preparation is a very important part and it will cover:
 
     Get the raw data
     Data clean-up: this will mean removing orphan values, aberrations or other anomalies
@@ -42,9 +30,11 @@ In many machine learning and neural network problems data preparation is a very 
     Split each of the train and test data into inputs and outputs.
 
 The Data
-We're going to use a dataset containing more than forty-thousand clients of the bank.The dataset is available as CSV files.
+
+We're going to use a dataset containing more than forty-thousand clients of the bank. The dataset is available as CSV files.
 
 Getting the raw data
+
 In our case getting data for a CSV file in R language is really easy with this lines of code:
 
 if(!file.exists(bm)){tryCatch(bm)}
@@ -64,13 +54,13 @@ Data grouping & data enhancing
 
 Now, we can create some aditional features about the education of the clients eliminate the clients with unknown education from the dataset. 
 
-p until this point we've only looked at individual client. However, what we really need is to look at each client's performance over its history.
+Until this point we've only looked at individual client. However, what we really need is to look at each client's performance over its history.
 
 When we build our predictive model, we'd like to supply it with as many features about each client to be involved . For that, we need to have a bank - performance dataset with historical data.
 
 Data cleanup again.
 
-transform old job names into new ones( with CL).
+Transform old job names into new ones( with CL).
 
 Data visualisation again
 
@@ -93,6 +83,34 @@ I'd like to get rid of outliers - values which are far away at the end of the sp
 Now, let's calculate some lag features for the clients of the bank.
 
 We'll look at the previous N clients, and we'll calculate the percentage of bal, dtion, edumar for those past N clients.
+
+Because data in the past might influence our prediction, we need for each of the dataframe rows to add columns reference to the past rows. This is because each of the row will serve as a training point, and if we want the prediction to take into account previous datapoints that's exactly what we should do add more columns.
+
+Data cleanup (again) 
+Training our first model
+It is going to describe the features we want to use and the outcome we're trying to predict.
+
+Splitting the data in train and test data 
+
+We're going to split our bank_features into a training and a testing dataset. We're going to be using the training data to fit our model, then we're going to use the testing data to evaluate its accuracy.
+
+Model Evaluation
+
+We can now expose our trained model to the test dataset, and calculate performance metrics.
+
+
+Other parameters here:
+
+importance - This is the extractor function for variable importance measures as produced by randomForest.
+varImpPlot - Dotchart of variable importance as measured by a Random Forest
+
+predict.randomForest - Prediction of test data using random forest.
+
+Mean Absolute Error (MAE)- MAE measures the average magnitude of the errors in a set of predictions, without considering their direction. It’s the average over the test sample of the absolute differences between prediction and actual observation where all individual differences have equal weight.
+
+Root mean squared error (RMSE) - RMSE is a quadratic scoring rule that also measures the average magnitude of the error. It’s the square root of the average of squared differences between prediction and actual observation.
+
+
   
 
 
