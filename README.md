@@ -4,7 +4,7 @@
 
 We're going to use historical information about bank - marketing to build a model, which is going to give us the ability to predict future results regarding balance for the bank clients.
 
-In R I can deal with missing values; working with categorical variables; robust models (which deal with outliers); 
+In R language I can deal with missing values; working with categorical variables; robust models (which deal with outliers); 
 
 Basic concepts of machine learning
 
@@ -41,8 +41,11 @@ In many machine learning and neural network problems data preparation is a very 
     Splitting the data in train and test data
     Split each of the train and test data into inputs and outputs.
 
+The Data
+We're going to use a dataset containing more than forty-thousand clients of the bank.The dataset is available as CSV files.
+
 Getting the raw data
-In our case getting data for a CSV file in r is really easy with this lines of code:
+In our case getting data for a CSV file in R language is really easy with this lines of code:
 
 if(!file.exists(bm)){tryCatch(bm)}
 
@@ -50,11 +53,46 @@ if(file.exists(bm)) bm_original <- read.csv(bm, header = TRUE, stringsAsFactors 
 
 Data cleanup
 
-eliminate any duplicates that may exist in the dataset
-the empty values in the dataframe are dropped
+First let's perform some basic cleanup on the dataset and eliminate any duplicates that may exist in the dataset, generate an id column for future use (joins etc).
 
+Data Exploration and Visualisation
+
+The best way to understand a dataset is to turn it into multiple pictures.
+Fortunately, R has some useful tools in this regard - and a lot of them come with the very popular ggplot2 package
 
 Data grouping & data enhancing
 
+Now, we can create some aditional features about the education of the clients eliminate the clients with unknown education from the dataset. 
+
+p until this point we've only looked at individual client. However, what we really need is to look at each client's performance over its history.
+
+When we build our predictive model, we'd like to supply it with as many features about each client to be involved . For that, we need to have a bank - performance dataset with historical data.
+
+Data cleanup again.
+
+transform old job names into new ones( with CL).
+
+Data visualisation again
+
+  what is the occurence frequency for martital statut?
+  distribution of balance per customer
+  distribution of customer age
+  
+Data clean up again
+
+I'd like to get rid of outliers - values which are far away at the end of the spectrum of possible values for this variable. The reason is that outliers can drastically change the results of the data analysis and statistical modeling. Outliers increase the error variance, reduce the power of statistical tests, and ultimately they can bias or influence estimates.
+
+  get rid of all the outliers by selecting the balance to [-8000, 8000]
+  job and adjustment coefficients for them
+  set missing values to 1
+ 
+ Data grouping & data enhancing 
+  
+  Feature Engineering
+
+Now, let's calculate some lag features for the clients of the bank.
+
+We'll look at the previous N clients, and we'll calculate the percentage of bal, dtion, edumar for those past N clients.
+  
 
 
