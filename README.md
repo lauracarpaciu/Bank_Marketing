@@ -12,26 +12,7 @@ I used a random forest, an algorithm which grows multiple decision trees from th
 
 How the data is prepared (the most important step)
 
-In many machine learning data preparation is a very important part and it will cover:
-
-    Get the raw data
-    Data clean-up: this will mean removing orphan values, aberrations or other anomalies
-    Data grouping: taking many data points and transforming into an aggregated data point
-    Data enhancing: adding other aspects of the data derived from own, or from external sources
-    Splitting the data in train and test data
-    Split each of the train and test data into inputs and outputs.
-    Typically, a problem will have many inputs and a few outputs
-    Rescale the data so it’s between 0 and 1 (this will help the network removing high/low biases)
-    Getting the raw data
-    Data clean-up
-    The empty values in the data frame are dropped
-    Data grouping and data enhancing
-    Splitting the data in train and test data
-    Split each of the train and test data into inputs and outputs.
-
-The Data
-
-We're going to use a dataset containing more than forty-thousand clients of the bank. The dataset is available as CSV files.
+We're going to use a dataset containing more than forty-thousand clients of the bank. The dataset is available as CSV files.ł
 
 The structure of the project.
 
