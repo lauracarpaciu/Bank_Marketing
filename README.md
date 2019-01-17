@@ -22,29 +22,38 @@ Get the data;
 
 Explore the data:
 
-   Visualisation of the data;
+Visualisation of the data;
    
-   Data clean up:
+Data clean up:
    
 -  this will mean removing orphan values, aberrations or other anomalies
 
-    Data grouping:
+Data grouping:
      
--   taking many data points and transforming into an aggregated data point
+- taking many data points and transforming into an aggregated data point
 
-     Data enhancing:
+Data enhancing:
         
--   adding other aspects of the data derived from own, or from external sources
+- adding other aspects of the data derived from own, or from external sources
 
-     Splitting the data in train and test data:
+Splitting the data in train and test data:
         
--  split each of the train and test data into inputs and outputs. Typically, a problem will have many inputs and a few outputs
+- split each of the train and test data into inputs and outputs. Typically, a problem will have many inputs and a few outputs
 
-     Model the data;
+Model the data;
             
-    Model evaluation;
+Model evaluation;
 
 Communicate and visualize the results;
+
+Other parameters here(model evaluation):
+
+Mean absolute error: link to: https://en.wikipedia.org/wiki/Mean_absolute_error
+
+Root-mean-square deviation: link to : https://en.wikipedia.org/wiki/Root-mean-square_deviation
+
+
+
 
 
 
