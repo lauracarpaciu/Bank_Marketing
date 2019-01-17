@@ -48,6 +48,8 @@ Communicate and visualize the results;
 
 Other parameters here(model evaluation):
 
+Importance : Extract variable importance measure
+
 Mean absolute error: link to: https://en.wikipedia.org/wiki/Mean_absolute_error
 
 Root-mean-square deviation: link to : https://en.wikipedia.org/wiki/Root-mean-square_deviation
